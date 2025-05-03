@@ -64,7 +64,8 @@ resource "aws_ecs_task_definition" "unreal_horde_task_definition" {
         startPeriod = 10
         timeout     = 5
       }
-      environment = concat([
+	  environment = concat(
+      [
         {
           name  = "Horde__databaseConnectionString"
           value = local.database_connection_string
@@ -74,14 +75,22 @@ resource "aws_ecs_task_definition" "unreal_horde_task_definition" {
           value = local.redis_connection_config
         },
         {
-          name  = "Horde__databasePublicCert",
+          name  = "Horde__databasePublicCert"
           value = "/app/config/global-bundle.pem"
         },
         {
-          name  = "Horde__jwtIssuer",
+          name  = "Horde__jwtIssuer"
           value = "https://${var.fully_qualified_domain_name}"
         },
-      ], local.horde_service_env)
+      ],
+      local.horde_service_env,
+      [
+        for k, v in var.extra_environment : {
+          name  = k
+          value = v
+        }
+      ]
+    )
       logConfiguration = {
         logDriver = "awslogs"
         options = {

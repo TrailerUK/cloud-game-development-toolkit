@@ -25,6 +25,12 @@ variable "environment" {
   default     = "Development"
 }
 
+variable "extra_environment" {
+  type        = map(string)
+  default     = {}
+  description = "Arbitrary extra env vars for the Horde API container"
+}
+
 variable "tags" {
   type = map(any)
   default = {
